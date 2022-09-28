@@ -53,7 +53,9 @@ Las cantidades se van a poner como tipo number, por simplicidad, que por defecto
 
 ### Operaciones de depósito y retirada
 
-Se ha decidido realizar las operaciones BD como transacciones para garantizar la atomicidad y consistencia de las operaciones bancarias. Primero, se actualizará la cantidad total del usuario. Después, se escribirá en la coleccion de transacciones. Si alguna de estas dos operaciones falla, se hace un rollback y no se escribe en BD.
+<!-- Se ha decidido realizar las operaciones BD como transacciones para garantizar la atomicidad y consistencia de las operaciones bancarias. Primero, se actualizará la cantidad total del usuario. Después, se escribirá en la coleccion de transacciones. Si alguna de estas dos operaciones falla, se hace un rollback y no se escribe en BD. -->
+
+Se ha intentado utilizar las menores operaciones sobre BD para evitar sobre carga, por ejemplo con el findOneAndUpdate, en vez de hacer un find, comprobar condiciones y actualizar. De esta manera nos evitamos posibles inconsistencias en los datos ya que mientras hacemos la comprobacion desde codigo, el dato en BD podría cambiarse.
 
 ### Inicialización
 
