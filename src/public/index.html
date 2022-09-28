@@ -11,12 +11,10 @@
 
     <form id="formDeposit">    
         <input type="number" name="amount" value="100" />
-        <input type="text" name="userId" value="5f9f1b9b9c9d4b0b8c1c1c1c"/>
         <button type="button">Deposit</button>
     </form>
     <form id="formWithdraw">    
         <input type="number" name="amount" value="100"/>
-        <input type="text" name="userId" value="5f9f1b9b9c9d4b0b8c1c1c1c"/>
         <button type="button">Withdraw</button>
     </form>
     <form id="buttonMovements">    
@@ -28,9 +26,10 @@
     </div>
 </body>
 <script>
+    const DEFAULT_USER_ID = '5f9f1b9b9c9d4b0b8c1c1c1c'
     const button = document.getElementById('buttonMovements');
     button.addEventListener('click', () => {
-        fetch('/api/v1/bank/movements/5f9f1b9b9c9d4b0b8c1c1c1c')
+        fetch('/api/v1/bank/movements/' + DEFAULT_USER_ID)
         .then(res => res.json())
         .then(data => {
             document.getElementById('transactions').innerHTML = '';
@@ -61,7 +60,7 @@
         console.log(
         JSON.stringify({
                 amount: formDeposit.amount.value,
-                userId: formDeposit.userId.value
+                userId: DEFAULT_USER_ID
             }))
         fetch('/api/v1/bank/deposit', {
             method: 'POST',
@@ -71,7 +70,7 @@
             },
             body: JSON.stringify({
                 amount: parseInt(formDeposit.amount.value),
-                userId: formDeposit.userId.value
+                userId: DEFAULT_USER_ID
             }),
         }).catch(err => window.alert(err))
     })
@@ -81,7 +80,7 @@
         console.log(
         JSON.stringify({
                 amount: formWithdraw.amount.value,
-                userId: formWithdraw.userId.value
+                userId: DEFAULT_USER_ID
             }))
         fetch('/api/v1/bank/withdraw', {
             method: 'POST',
@@ -91,7 +90,7 @@
             },
             body: JSON.stringify({
                 amount: parseInt(formWithdraw.amount.value),
-                userId: formWithdraw.userId.value
+                userId: DEFAULT_USER_ID
             }),
         }).catch(err => window.alert(err))
     })
