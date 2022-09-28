@@ -37,8 +37,11 @@
             // const title = document.createElement('h1').innerHTML =  `<h1>Transactions</h1>`
             
             const title = document.createElement("h1");
-            title.innerHTML = `Transactions`
+            title.innerHTML = `Transactions \n`
             document.getElementById("transactions").appendChild(title);
+            const header = document.createElement("h3");
+            header.innerHTML = `Date_____Amount____Balance \n`
+            document.getElementById("transactions").appendChild(header);
 
             data.transactions.map(({amount, type, date, balance}) => {
                 const div = document.createElement('div');

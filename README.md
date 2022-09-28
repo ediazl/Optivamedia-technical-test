@@ -69,3 +69,7 @@ Solucion: revertir operación si algo falla.
 Mas sencillo revertir la operación de crear registro de transaccion, por lo que primero se hace esa, si la segunda falla. Se borra el registro creado.
 
 En produccion Si que configuraría la BD en modoReplica set para garantizar alta disponibilidad ante algun error.
+
+### Frontend
+
+Se ha realizado un frontend simple para probar el sistema realizado.
