@@ -2,40 +2,46 @@ import { MongoClient, ObjectId, UpdateResult } from "mongodb";
 import { DB_COLLECTIONS, DEFAULT_USER_ID } from "../constants";
 import { ITransaction } from "../models/transactions";
 
+/**
+ * Controller for substract from account
+ * @param userId
+ * @param amount positive integer
+ * @param dbDriver
+ */
 export async function withDrawController(
   userId: string,
   amount: number,
   dbDriver: MongoClient
 ) {
-  console.log("withdraw");
+  console.log("withdraw" + amount + " from " + userId);
 
-  const sesion = dbDriver.startSession();
-  sesion.startTransaction({
-    readConcern: { level: "snapshot" },
-    writeConcern: { w: "majority" },
-  });
+  // const sesion = dbDriver.startSession();
+  // sesion.startTransaction({
+  //   readConcern: { level: "snapshot" },
+  //   writeConcern: { w: "majority" },
+  // });
 
   let res: UpdateResult = null;
   try {
     // TODO: hacerlo en una única operación para reducir carga en BD
     res = await dbDriver
       .db()
-      .collection("bank")
-      .updateOne(
-        { _id: new ObjectId(userId) },
+      .collection(DB_COLLECTIONS.accounts)
+      .updateOne({ _id: new ObjectId(userId) }, [
         {
-          $cond: {
-            if: { $gte: ["$amount", amount] },
-            then: {
-              $inc: { amount: -amount },
-            },
-            else: {
-              $inc: { amount: 0 },
+          $set: {
+            amount: {
+              $cond: {
+                if: { $gte: ["$amount", amount] },
+                then: {
+                  $subtract: ["$amount", amount],
+                },
+                else: "$amount",
+              },
             },
           },
         },
-        { session: sesion }
-      );
+      ]);
   } catch (error) {
     console.error(error);
     throw {
@@ -61,9 +67,10 @@ export async function withDrawController(
   try {
     const data: ITransaction = {
       date: new Date(),
-      amount: amount,
+      type: "withdraw",
+      amount: -amount,
     };
-    await dbDriver.db().collection("transactions").insertOne(data);
+    await dbDriver.db().collection(DB_COLLECTIONS.transactions).insertOne(data);
   } catch (error) {
     console.error(error);
     throw {
@@ -103,22 +110,44 @@ export async function getTransactions(
 
   return transactions;
 }
-// export async function depositController(amount: number, dbDriver: MongoClient) {
-//   console.log("deposit");
 
-//   try {
-//     const data: Transactions = {
-//       date: new Date(),
-//       amount: amount,
-//     };
-//     await dbDriver.db().collection("bank").insertOne(data. {
+/**
+ * Controller for increment account
+ * @param userId
+ * @param amount positive number
+ * @param dbDriver
+ */
+export async function depositController(
+  userId: string,
+  amount: number,
+  dbDriver: MongoClient
+) {
+  console.log("deposit");
 
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     throw {
-//       _id: "databaseError",
-//       resCode: 500,
-//     };
-//   }
-// }
+  try {
+    await dbDriver
+      .db()
+      .collection(DB_COLLECTIONS.accounts)
+      .updateOne(
+        { _id: new ObjectId(userId) },
+        {
+          $inc: {
+            amount,
+          },
+        }
+      );
+
+    const data: ITransaction = {
+      date: new Date(),
+      type: "deposit",
+      amount: amount,
+    };
+    await dbDriver.db().collection(DB_COLLECTIONS.transactions).insertOne(data);
+  } catch (error) {
+    console.error(error);
+    throw {
+      _id: "databaseError",
+      resCode: 500,
+    };
+  }
+}

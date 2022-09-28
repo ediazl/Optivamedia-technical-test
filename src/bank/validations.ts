@@ -7,7 +7,7 @@ export function withdrawValidation(
 ) {
   const { amount } = req.body;
   if (amount <= 0) {
-    res.status(400).send("The amount must be greater than 0");
+    res.status(400).json({ error: "The amount must be greater than 0" });
   } else {
     next();
   }

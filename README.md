@@ -1,3 +1,7 @@
+## Consideraciones
+
+Debido a la naturaleza del problema, para hacer estas operaciones seguras, se deben usar transacciones. Por lo que una base de datos MySQL sería recomendable. Mongodb no fue concebido para ello inicialmente, pero actualmente existe un modo replicaSet que si que permite hacer transacciones.
+
 ## Decisioens de diseño
 
 ### Endpoints
@@ -35,10 +39,21 @@ Se ha decidio crear dos colecciones diferentes. Transactions y Accounts
 
         Además con este diseño se podría incorporar un sistema de login de usuarios.
 
+Las cantidades se van a poner como tipo number, por simplicidad, que por defecto son 32 bits. Se podrian usar tipos como decimal128 o Int64 ya que este tipo esta pensado para sistemas monetarios como nuestro caso.
+
 ### Operaciones de depósito y retirada
 
 Se ha decidido realizar las operaciones BD como transacciones para garantizar la atomicidad y consistencia de las operaciones bancarias. Primero, se actualizará la cantidad total del usuario. Después, se escribirá en la coleccion de transacciones. Si alguna de estas dos operaciones falla, se hace un rollback y no se escribe en BD.
 
-### Ejemplo de uso
+### Inicialización
 
 Como solo se va a tener un único usuario, al iniciar mongodb, creo los datos para un usuario por defecto, como he dicho antes, se podría implantar un sistema de login y esto no sería necesario por tanto.
+
+### Problemas
+
+Mognodb Transactions solo se pueden establecer con mongo en modo replica set.
+Solucion: revertir operación si algo falla.
+
+Mas sencillo revertir la operación de crear registro de transaccion, por lo que primero se hace esa, si la segunda falla. Se borra el registro creado.
+
+En produccion Si que configuraría la BD en modoReplica set para garantizar alta disponibilidad ante algun error.

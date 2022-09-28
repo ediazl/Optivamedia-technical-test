@@ -1,18 +1,23 @@
-import { Request, Response } from "express";
+import { Request, Response, Router } from "express";
 import { MongoClient } from "mongodb";
 import { DEFAULT_USER_ID } from "../constants";
-import { getTransactions, withDrawController } from "./controller";
+import {
+  depositController,
+  getTransactions,
+  withDrawController,
+} from "./controller";
 import { depositValidation, withdrawValidation } from "./validations";
 
-const router = require("express").Router();
+const router: Router = require("express").Router();
 
 module.exports = (dbDriver: MongoClient) => {
   router.get("/movements", async (req: Request, res: Response) => {
     try {
-      await getTransactions(DEFAULT_USER_ID, dbDriver);
+      const transactions = await getTransactions(DEFAULT_USER_ID, dbDriver);
+      res.status(200).json({ transactions });
     } catch (error) {
       console.error(error);
-      return res.status(500).sendStatus(error?.resCode);
+      res.sendStatus(error?.resCode);
     }
   });
   router.post(
@@ -22,31 +27,32 @@ module.exports = (dbDriver: MongoClient) => {
       try {
         const { amount } = req.body;
 
-        await withDrawController(DEFAULT_USER_ID, amount, dbDriver);
+        await withDrawController(DEFAULT_USER_ID, Math.abs(amount), dbDriver);
 
-        return res.sendStatus(204);
+        res.sendStatus(204);
       } catch (error) {
         console.error(error);
-        return res.sendStatus(error?.resCode);
+        res.sendStatus(error?.resCode);
       }
     }
   );
-  // router.post(
-  //   "/deposit",
-  //   depositValidation,
-  //   async (req: Request, res: Response) => {
-  //     res.send("Deposit!");
-  //     try {
-  //       const { amount } = req.body;
+  router.post(
+    "/deposit",
+    depositValidation,
+    async (req: Request<null, null, { amount: number }>, res: Response) => {
+      console.log("Deposit!");
+      try {
+        // Se podría recibir el userId en el body, cuando el usuario se haya logueado
+        const { amount } = req.body;
 
-  //       await withDrawController(amount, dbDriver);
+        await depositController(DEFAULT_USER_ID, amount, dbDriver);
 
-  //       return res.sendStatus(204);
-  //     } catch (error) {
-  //       console.error(error);
-  //       return res.sendStatus(error?.resCode);
-  //     }
-  //   }
-  // );
+        res.sendStatus(204);
+      } catch (error) {
+        console.error(error);
+        res.sendStatus(error?.resCode);
+      }
+    }
+  );
   return router;
 };
