@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  bank:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - bank
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  mongodb:
+    image: mongo:3.6
+    volumes:
+      - ./data:/data/db
+    networks:
+      - bank
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 1
+networks:
+  bank:
