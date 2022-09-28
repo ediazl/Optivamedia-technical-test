@@ -66,6 +66,7 @@ export async function withDrawController(
 
   try {
     const data: ITransaction = {
+      userId: new ObjectId(userId),
       date: new Date(),
       type: "withdraw",
       amount: -amount,
@@ -89,7 +90,7 @@ export async function getTransactions(
     transactions = await dbDriver
       .db()
       .collection<ITransaction>(DB_COLLECTIONS.transactions)
-      .find({ _id: new ObjectId(userId) })
+      .find({ userId: new ObjectId(userId) })
       .sort({ date: -1 })
       .toArray();
   } catch (error) {
@@ -138,6 +139,7 @@ export async function depositController(
       );
 
     const data: ITransaction = {
+      userId: new ObjectId(userId),
       date: new Date(),
       type: "deposit",
       amount: amount,
