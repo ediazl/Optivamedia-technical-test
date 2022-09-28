@@ -6,20 +6,28 @@ import {
   getTransactions,
   withDrawController,
 } from "./controller";
-import { depositValidation, withdrawValidation } from "./validations";
+import {
+  depositValidation,
+  movementsValidation,
+  withdrawValidation,
+} from "./validations";
 
 const router: Router = require("express").Router();
 
 module.exports = (dbDriver: MongoClient) => {
-  router.get("/movements", async (req: Request, res: Response) => {
-    try {
-      const transactions = await getTransactions(DEFAULT_USER_ID, dbDriver);
-      res.status(200).json({ transactions });
-    } catch (error) {
-      console.error(error);
-      res.sendStatus(error?.resCode);
+  router.get(
+    "/movements/:userId",
+    movementsValidation,
+    async (req: Request, res: Response) => {
+      try {
+        const transactions = await getTransactions(DEFAULT_USER_ID, dbDriver);
+        res.status(200).json({ transactions });
+      } catch (error) {
+        console.error(error);
+        res.sendStatus(error?.resCode);
+      }
     }
-  });
+  );
   router.post(
     "/withdraw",
     withdrawValidation,

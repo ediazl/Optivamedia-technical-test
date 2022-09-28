@@ -6,6 +6,7 @@ import { ObjectId } from "mongodb";
 
 export interface ITransaction {
   userId: ObjectId;
+  balance: number;
   amount: number;
   date: Date;
   type: string;

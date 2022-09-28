@@ -4,6 +4,7 @@ import { MongoClient } from "mongodb";
 import { ExitStatus, skipPartiallyEmittedExpressions } from "typescript";
 import { DATABASE_NAME, MONGO_URI, PORT } from "./constants";
 import { initMongo } from "./dbDriver";
+
 const bankRoutes = require("./bank/routes");
 
 const app = express();

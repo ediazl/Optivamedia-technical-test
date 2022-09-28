@@ -1,5 +1,6 @@
-import { MongoClient, ObjectId, UpdateResult } from "mongodb";
+import { ModifyResult, MongoClient, ObjectId, UpdateResult } from "mongodb";
 import { DB_COLLECTIONS, DEFAULT_USER_ID } from "../constants";
+import { IAccount } from "../models/accounts";
 import { ITransaction } from "../models/transactions";
 
 /**
@@ -21,27 +22,33 @@ export async function withDrawController(
   //   writeConcern: { w: "majority" },
   // });
 
-  let res: UpdateResult = null;
+  let res: ModifyResult = null;
   try {
     // TODO: hacerlo en una única operación para reducir carga en BD
     res = await dbDriver
       .db()
       .collection(DB_COLLECTIONS.accounts)
-      .updateOne({ _id: new ObjectId(userId) }, [
-        {
-          $set: {
-            amount: {
-              $cond: {
-                if: { $gte: ["$amount", amount] },
-                then: {
-                  $subtract: ["$amount", amount],
+      .findOneAndUpdate(
+        { _id: new ObjectId(userId) },
+        [
+          {
+            $set: {
+              amount: {
+                $cond: {
+                  if: { $gte: ["$amount", amount] },
+                  then: {
+                    $subtract: ["$amount", amount],
+                  },
+                  else: "$amount",
                 },
-                else: "$amount",
               },
             },
           },
-        },
-      ]);
+        ],
+        {
+          returnDocument: "after",
+        }
+      );
   } catch (error) {
     console.error(error);
     throw {
@@ -50,26 +57,28 @@ export async function withDrawController(
     };
   }
 
-  if (res.matchedCount === 0) {
+  console.log(JSON.stringify(res));
+  if (res.ok === 0) {
     throw {
       _id: "userNotFound",
       resCode: 404,
     };
   }
 
-  if (res.modifiedCount === 0) {
-    throw {
-      _id: "insufficientFunds",
-      resCode: 409,
-    };
-  }
+  // if (res.modifiedCount === 0) {
+  //   throw {
+  //     _id: "insufficientFunds",
+  //     resCode: 409,
+  //   };
+  // }
 
   try {
     const data: ITransaction = {
       userId: new ObjectId(userId),
       date: new Date(),
       type: "withdraw",
-      amount: -amount,
+      amount,
+      balance: res.value.amount,
     };
     await dbDriver.db().collection(DB_COLLECTIONS.transactions).insertOne(data);
   } catch (error) {
@@ -125,24 +134,44 @@ export async function depositController(
 ) {
   console.log("deposit");
 
+  let res: ModifyResult = null;
   try {
-    await dbDriver
+    res = await dbDriver
       .db()
       .collection(DB_COLLECTIONS.accounts)
-      .updateOne(
+      .findOneAndUpdate(
         { _id: new ObjectId(userId) },
         {
           $inc: {
             amount,
           },
+        },
+        {
+          returnDocument: "after",
         }
       );
+  } catch (error) {
+    console.error(error);
+    throw {
+      _id: "databaseError",
+      resCode: 500,
+    };
+  }
 
+  if (res === null || res.ok === 0) {
+    throw {
+      _id: "Could not make operation",
+      resCode: 409,
+    };
+  }
+
+  try {
     const data: ITransaction = {
       userId: new ObjectId(userId),
       date: new Date(),
       type: "deposit",
-      amount: amount,
+      amount,
+      balance: (res.value as IAccount).amount, // Nueva cantidad
     };
     await dbDriver.db().collection(DB_COLLECTIONS.transactions).insertOne(data);
   } catch (error) {

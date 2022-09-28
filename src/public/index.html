@@ -8,5 +8,93 @@
 </head>
 <body>
     <h1>Optivamedia Bank</h1>
+
+    <form id="formDeposit">    
+        <input type="number" name="amount" value="100" />
+        <input type="text" name="userId" value="5f9f1b9b9c9d4b0b8c1c1c1c"/>
+        <button type="button">Deposit</button>
+    </form>
+    <form id="formWithdraw">    
+        <input type="number" name="amount" value="100"/>
+        <input type="text" name="userId" value="5f9f1b9b9c9d4b0b8c1c1c1c"/>
+        <button type="button">Withdraw</button>
+    </form>
+    <form id="buttonMovements">    
+        <button type="button">Transactions</button>
+    </form>
+
+    <div id="transactions">
+
+    </div>
 </body>
+<script>
+    const button = document.getElementById('buttonMovements');
+    button.addEventListener('click', () => {
+        fetch('/api/v1/bank/movements/5f9f1b9b9c9d4b0b8c1c1c1c')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('transactions').innerHTML = '';
+
+            // const title = document.createElement('h1').innerHTML =  `<h1>Transactions</h1>`
+            
+            const title = document.createElement("h1");
+            title.innerHTML = `Transactions`
+            document.getElementById("transactions").appendChild(title);
+
+            data.transactions.map(({amount, type, date, balance}) => {
+                const div = document.createElement('div');
+                const p = document.createElement('p');
+                if(type === 'deposit') {
+                    p.innerHTML = `${new Date(date).toLocaleDateString('es-ES')} +${amount} ${balance} \n`;
+                } else {
+                    p.innerHTML = `${new Date(date).toLocaleDateString('es-ES')} -${amount} ${balance}  \n`;
+                }
+                div.appendChild(p);
+                document.getElementById('transactions').appendChild(div);
+            })
+            
+        })
+    })
+
+    const formDeposit = document.getElementById('formDeposit');
+    formDeposit.addEventListener('click', () => {
+        console.log(
+        JSON.stringify({
+                amount: formDeposit.amount.value,
+                userId: formDeposit.userId.value
+            }))
+        fetch('/api/v1/bank/deposit', {
+            method: 'POST',
+            headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                amount: parseInt(formDeposit.amount.value),
+                userId: formDeposit.userId.value
+            }),
+        }).catch(err => window.alert(err))
+    })
+
+    const formWithdraw = document.getElementById('formWithdraw');
+    formWithdraw.addEventListener('click', () => {
+        console.log(
+        JSON.stringify({
+                amount: formWithdraw.amount.value,
+                userId: formWithdraw.userId.value
+            }))
+        fetch('/api/v1/bank/withdraw', {
+            method: 'POST',
+            headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                amount: parseInt(formWithdraw.amount.value),
+                userId: formWithdraw.userId.value
+            }),
+        }).catch(err => window.alert(err))
+    })
+
+</script>
 </html>

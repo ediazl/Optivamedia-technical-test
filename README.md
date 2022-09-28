@@ -26,9 +26,16 @@ Se ha decidio crear dos colecciones diferentes. Transactions y Accounts
     - Transactions:
         Almacenará todas las transacciones en el sistema.
         Para ello, hará referencia al usuario que hizo la transacción, de qué tipo, y la cantidad total.
+        {
+            _id: id transaccion
+            userId: id de usuario
+            date: fecha de la transaccion
+            type: tipo de la transaccion (deposit o withdrawal) (Para poder filtrar por ello)
+        }
 
         Alternativas:
             1.Se podría considerar hacer dos colecciones separadas, una para retiradas y otra para depósitos para que ante un aumento de los registros, disminuir el tiempo de consulta.
+
     - Fondos:
         Almacenará la cantidad total que tiene el usuario y a futuro se puede añadir otro tipo de información, como tipo de cuenta, permisos asociados, etc.
         Se ha deicido independizar estos datos de las transacciones ya que son datos críticos.
@@ -38,6 +45,9 @@ Se ha decidio crear dos colecciones diferentes. Transactions y Accounts
         }
 
         Además con este diseño se podría incorporar un sistema de login de usuarios.
+        Las consultas más comunes serían:
+            - Obtener todas transacciones de un usuario
+            - Obtener todas retiradas de un usuario
 
 Las cantidades se van a poner como tipo number, por simplicidad, que por defecto son 32 bits. Se podrian usar tipos como decimal128 o Int64 ya que este tipo esta pensado para sistemas monetarios como nuestro caso.
 
