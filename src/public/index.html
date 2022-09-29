@@ -11,11 +11,11 @@
 
     <form id="formDeposit">    
         <input type="number" name="amount" value="100" />
-        <button type="button">Deposit</button>
+        <button id="buttonDeposit" type="button">Deposit</button>
     </form>
     <form id="formWithdraw">    
         <input type="number" name="amount" value="100"/>
-        <button type="button">Withdraw</button>
+        <button id="buttonWithdraw" type="button">Withdraw</button>
     </form>
     <form id="buttonMovements">    
         <button type="button">Transactions</button>
@@ -40,16 +40,16 @@
             title.innerHTML = `Transactions \n`
             document.getElementById("transactions").appendChild(title);
             const header = document.createElement("h3");
-            header.innerHTML = `Date_____Amount____Balance \n`
+            header.innerHTML = `Date     Amount     Balance \n`
             document.getElementById("transactions").appendChild(header);
 
             data.transactions.map(({amount, type, date, balance}) => {
                 const div = document.createElement('div');
                 const p = document.createElement('p');
                 if(type === 'deposit') {
-                    p.innerHTML = `${new Date(date).toLocaleDateString('es-ES')} +${amount} ${balance} \n`;
+                    p.innerHTML = `${new Date(date).toLocaleDateString('es-ES')}     +${amount}     ${balance} \n`;
                 } else {
-                    p.innerHTML = `${new Date(date).toLocaleDateString('es-ES')} -${amount} ${balance}  \n`;
+                    p.innerHTML = `${new Date(date).toLocaleDateString('es-ES')}     -${amount}     ${balance} \n`;
                 }
                 div.appendChild(p);
                 document.getElementById('transactions').appendChild(div);
@@ -58,8 +58,8 @@
         })
     })
 
-    const formDeposit = document.getElementById('formDeposit');
-    formDeposit.addEventListener('click', () => {
+    const buttonDeposit = document.getElementById('buttonDeposit');
+    buttonDeposit.addEventListener('click', () => {
         console.log(
         JSON.stringify({
                 amount: formDeposit.amount.value,
@@ -75,11 +75,19 @@
                 amount: parseInt(formDeposit.amount.value),
                 userId: DEFAULT_USER_ID
             }),
-        }).catch(err => window.alert(err))
+        })
+        .then((res, err) => {
+            if(err){
+                window.alert('Operation failed')
+
+            } else {
+                window.alert('Operation successful')
+            }
+        })
     })
 
-    const formWithdraw = document.getElementById('formWithdraw');
-    formWithdraw.addEventListener('click', () => {
+    const buttonWithdraw = document.getElementById('buttonWithdraw');
+    buttonWithdraw.addEventListener('click', () => {
         console.log(
         JSON.stringify({
                 amount: formWithdraw.amount.value,
@@ -95,7 +103,14 @@
                 amount: parseInt(formWithdraw.amount.value),
                 userId: DEFAULT_USER_ID
             }),
-        }).catch(err => window.alert(err))
+        })
+        .then((res, err) => {
+            if(err){
+                window.alert('Operation failed')
+            } else {
+                window.alert('Operation successful')
+            }
+        })
     })
 
 </script>

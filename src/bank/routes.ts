@@ -31,9 +31,12 @@ module.exports = (dbDriver: MongoClient) => {
   router.post(
     "/withdraw",
     withdrawValidation,
-    async (req: Request<null, null, { amount: number }>, res: Response) => {
+    async (
+      req: Request<null, null, { amount: number; userId: string }>,
+      res: Response
+    ) => {
       try {
-        const { amount } = req.body;
+        const { amount, userId } = req.body;
 
         await withDrawController(DEFAULT_USER_ID, Math.abs(amount), dbDriver);
 
@@ -47,11 +50,14 @@ module.exports = (dbDriver: MongoClient) => {
   router.post(
     "/deposit",
     depositValidation,
-    async (req: Request<null, null, { amount: number }>, res: Response) => {
+    async (
+      req: Request<null, null, { amount: number; userId: string }>,
+      res: Response
+    ) => {
       console.log("Deposit!");
       try {
         // Se podría recibir el userId en el body, cuando el usuario se haya logueado
-        const { amount } = req.body;
+        const { amount, userId } = req.body;
 
         await depositController(DEFAULT_USER_ID, amount, dbDriver);
 

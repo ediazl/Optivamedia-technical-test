@@ -1,3 +1,14 @@
+## Comando
+
+Para iniciar el sistema. Debe ejecutar el siguiente comando:
+`sudo docker compose up -d --build`
+
+He creado una pequeña interfaz para realizar las operaciones requeridas.
+Una vez se haya iniciado el servicio.
+Se debe ir al navegador a la ruta:
+
+`localhost:3000`
+
 ## Consideraciones
 
 Debido a la naturaleza del problema, para hacer estas operaciones seguras, se deben usar transacciones. Por lo que una base de datos MySQL sería recomendable. Mongodb no fue concebido para ello inicialmente, pero actualmente existe un modo replicaSet que si que permite hacer transacciones.

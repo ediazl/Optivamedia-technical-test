@@ -1,35 +1,43 @@
 import { ObjectID } from "bson";
 import { NextFunction, Request, Response } from "express";
 export function withdrawValidation(
-  req: Request<null, null, { amount: number }>,
+  req: Request<null, null, { amount: number; userId: string }>,
   res: Response,
   next: NextFunction
 ) {
-  const { amount } = req.body;
+  const { amount, userId } = req.body;
   console.log(typeof amount);
   console.log(amount);
-  if (typeof amount !== "number" || amount <= 0) {
-    res.status(400).json({ error: "Invalid amount" + amount });
-  } else {
+  try {
+    if (typeof userId !== "string" || !ObjectID.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid userId" });
+    }
+    if (typeof amount !== "number" || amount <= 0) {
+      return res.status(400).json({ error: "Invalid amount" + amount });
+    }
     next();
+  } catch (error) {
+    res.status(400).json({ error: "BadParams" });
   }
 }
 
 export function depositValidation(
-  req: Request<null, null, { amount: number }>,
+  req: Request<null, null, { amount: number; userId: string }>,
   res: Response,
   next: NextFunction
 ) {
   console.log(JSON.stringify(req.body));
-  const { amount } = req.body;
+  const { amount, userId } = req.body;
   console.log(typeof amount);
   console.log(amount);
   try {
-    if (typeof amount !== "number" || amount <= 0) {
-      res.status(400).json({ error: "Invalid amount " + amount });
-    } else {
-      next();
+    if (typeof userId !== "string" || !ObjectID.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid userId" });
     }
+    if (typeof amount !== "number" || amount <= 0) {
+      return res.status(400).json({ error: "Invalid amount " + amount });
+    }
+    next();
   } catch (error) {
     res.status(400).json({ error: "BadParams" });
   }
@@ -40,10 +48,13 @@ export function movementsValidation(
   res: Response,
   next: NextFunction
 ) {
-  const { userId } = req.params;
-  if (!ObjectID.isValid(userId)) {
-    res.status(400).send({ error: "BadParams" });
-  } else {
+  try {
+    const { userId } = req.params;
+    if (!ObjectID.isValid(userId)) {
+      return res.status(400).send({ error: "BadParams" });
+    }
     next();
+  } catch (error) {
+    res.status(400).json({ error: "BadParams" });
   }
 }

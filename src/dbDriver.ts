@@ -16,7 +16,7 @@ export async function initMongo(url: string) {
         {
           // Default data for testint
           $set: {
-            amount: 1000,
+            balance: 1000,
             createdAt: new Date(),
           },
         },
