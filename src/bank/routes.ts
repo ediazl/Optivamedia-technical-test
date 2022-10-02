@@ -36,20 +36,12 @@ module.exports = (dbDriver: MongoClient) => {
         let { amount, userId } = req.body;
 
         console.log(amount);
-        // Two decimals
-        const amountDouble = Number.parseFloat(Math.abs(amount).toFixed(2));
-        console.log("amountDouble");
-        console.log(amountDouble);
-        await withDrawController(
-          DEFAULT_USER_ID,
-          new Double(amountDouble),
-          dbDriver
-        );
+        await withDrawController(DEFAULT_USER_ID, new Double(amount), dbDriver);
 
         res.sendStatus(204);
       } catch (error) {
         console.error(error);
-        res.sendStatus(error?.resCode);
+        res.status(error?.resCode).send({ error: error._id });
       }
     }
   );
@@ -64,19 +56,12 @@ module.exports = (dbDriver: MongoClient) => {
       try {
         // Usuario de la transaccion,cuando haya login
         const { amount, userId } = req.body;
-        const amountDouble = Number.parseFloat(Math.abs(amount).toFixed(2));
-        console.log("amountDouble");
-        console.log(amountDouble);
-        await depositController(
-          DEFAULT_USER_ID,
-          new Double(amountDouble),
-          dbDriver
-        );
+        await depositController(DEFAULT_USER_ID, new Double(amount), dbDriver);
 
         res.sendStatus(204);
       } catch (error) {
         console.error(error);
-        res.sendStatus(error?.resCode);
+        res.status(error?.resCode).send({ error: error._id });
       }
     }
   );

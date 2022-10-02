@@ -15,20 +15,31 @@ Debido a la naturaleza del problema, para hacer estas operaciones seguras, se po
 
 ## Decisioens de diseño
 
+Con vista al futuro de la aplicacion, he pensado generalizar más el ejercicio, partiendo de la idea lógica de que el cajero lo puedan utilizar diferentes usuarios y no solo uno, por lo que el diseño se ha basado en esa premisa. Un usuario inicia sesión, y obtiene sus datos.
+
 ### Endpoints
 
-He decidido realizar dos endpoints diferentes para separar posibles lógicas adicionales (Enviar email cuando se haya hecho una retirada, pedir código de confirmación, etc.)
+con motivo de la decision tomada anteriormente, se ha añadido el parametro userId a las rutas, correspondiente al id de usuario que ha iniciado sesión.
 
-Se podría unificar en uno, si se añade el amount como un string con el siguiente formato "-500" para retirada y "+500" para depósito.
+He decidido realizar dos endpoints diferentes para separar posibles lógicas adicionales (Enviar email cuando se haya hecho una retirada, pedir código de confirmación, etc.). Se podría unificar en uno, por ejemplo, si se añade el amount como un string con el siguiente formato "-500" para retirada y "+500" para depósito. Pero a futurio se perdería la ventaja anteriormente comentada.
+
+Se ha realizado una validacion que verifica:
+
+1. Cantidad mínima de operación es 1 centimo
+2. Los datos son del tipo esperado.
+3. El dato puede tener muchos decimales. Coger los dos primeros. (podria lanzarse un error. Debería limitarse en frontend tambien)
+   Se ha evitado utilizar la funcion ParseFloat ya que con un dato de mas de dos decimales haría un redondeo. ej 0.056 -> 0.6
+   He querido evitar esta situación.
 
 ### MongoDb
 
+Diferentes opciones de MongoDb para node (Mongoose, driver nativo...)
 Utilizar el driver nativo de mongo -> evitar capa de abstraccion (mongoose)
 
-Se ha decidido crear una instancia de cliente de clase DbDriver y con ella,
+Se ha decidido crear una instancia de cliente MongoDb y con ella,
 pasarsela como parametro a cada ruta. Obliga a organizar mejor el código y poder seguir el flujo desde un punto y que haya trazabilidad. Es decir, no lo exportas y ala, que lo use quien quiera.
 
-Otra opción sería crear una clase con parametro cliente, y hacerlo global.
+Otra opción sería crear el cliente, y exportarlo globalmente.
 
 ### Colecciones
 
@@ -73,7 +84,7 @@ Se ha intentado utilizar las menores operaciones sobre BD para evitar sobre carg
 
 ### Inicialización
 
-Como solo se va a tener un único usuario, al iniciar mongodb, creo los datos para un usuario por defecto, como he dicho antes, se podría implantar un sistema de login y esto no sería necesario por tanto.
+Como solo se va a tener un único usuario, al iniciar mongodb, creo los datos para un usuario por defecto, como he dicho antes, se podría implantar un sistema de login.
 
 ### Problemas
 
