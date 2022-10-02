@@ -63,12 +63,12 @@ Se ha decidio crear dos colecciones diferentes. Transactions y Accounts
             1.Se podría considerar hacer dos colecciones separadas, una para retiradas y otra para depósitos para que ante un aumento de los registros, disminuir el tiempo de consulta.
             2.Existe el tipo Decimal128 para mayor precision de los decimales, perfecto para datos monetarios, pero por simplicidad, se ha utilizado el tipo Double, que utiliza 8bytes.
 
-    - Fondos:
+    - Accounts:
         Almacenará la cantidad total que tiene el usuario y a futuro se puede añadir otro tipo de información, como tipo de cuenta, permisos asociados, etc.
         Se ha deicido independizar estos datos de las transacciones ya que son datos críticos.
         {
             _id: id de usuario
-            totalAmount: cantidadTotal
+            balance: fondos totales del usuario
         }
 
         Además con este diseño se podría incorporar un sistema de login de usuarios.
