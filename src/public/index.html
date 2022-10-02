@@ -34,14 +34,10 @@
             .then(data => {
                 document.getElementById('transactions').innerHTML = '';
 
-                // const title = document.createElement('h1').innerHTML =  `<h1>Transactions</h1>`
 
                 const title = document.createElement("h1");
                 title.innerHTML = `Transactions \n`
                 document.getElementById("transactions").appendChild(title);
-                // const header = document.createElement("h3");
-                // header.innerHTML = `Date     Amount     Balance \n`
-                // document.getElementById("transactions").appendChild(header);
                 var table = document.createElement("table");
                 var header = table.createTHead();
                 table.style = "border-color:black;border-style:solid;border-width:1px;";
@@ -52,6 +48,7 @@
 
                 // Mostrar cada fila
                 data.transactions.forEach(element => {
+                    console.log(element);
                     var row = table.insertRow(1);
                     var cell1 = row.insertCell(0).innerHTML = new Date(element.date).toLocaleDateString('es-ES')
                     var cell2 = row.insertCell(1);

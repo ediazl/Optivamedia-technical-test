@@ -17,10 +17,10 @@ export function withdrawDepositValidation(
       return res.status(400).json({ error: "Invalid amount" + amount });
     }
     // Sanear los parametros Pasar a double
-    console.log(Math.abs(amount).toFixed(2));
     console.log(+Math.abs(amount).toFixed(2));
 
-    // Lo hago asi porque si me parseFloat redondea a dos decimales, ej. 0.55 -> 0.6
+    // parseFloat directamente redondea a dos decimales, si hay mas de tres ej. 0.55 -> 0.6
+    // Primero se cogen los dos decimales y luego se parsea
     req.body.amount = parseFloat(
       amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]
     );

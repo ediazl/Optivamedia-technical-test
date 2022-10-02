@@ -11,19 +11,15 @@ const app = express();
 
 async function init() {
   let dbClient = await initMongo(`${MONGO_URI}`);
-  dbClient
-    .db()
-    .collections()
-    .then((collections) => {
-      console.log(collections);
-    });
+
+  // Si el proceso se cierra, cerrar la conexion a la BD
   process.on("SIGINT", function () {
-    // this is only called on ctrl+c, not restart
     dbClient.close().then(() => {
       console.log("Database connection closed");
       process.exit(0);
     });
   });
+
   app.use(bodyParser.json());
   app.use("/api/v1/bank", bankRoutes(dbClient));
   app.use(express.static(__dirname + "/public"));

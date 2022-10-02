@@ -10,6 +10,9 @@ import { movementsValidation, withdrawDepositValidation } from "./validations";
 
 const router: Router = require("express").Router();
 
+/**
+ * Endpoint para obtener los movimientos de un usuario
+ */
 module.exports = (dbDriver: MongoClient) => {
   router.get(
     "/movements/:userId",
@@ -24,6 +27,10 @@ module.exports = (dbDriver: MongoClient) => {
       }
     }
   );
+
+  /**
+   * Endpoint para sacar en la cuenta de usuario una cantidad mayor a 0.01 eruso
+   */
   router.post(
     "/withdraw",
     withdrawDepositValidation,
@@ -45,6 +52,10 @@ module.exports = (dbDriver: MongoClient) => {
       }
     }
   );
+
+  /**
+   * Endpoint para depositar en la cuenta de usuario una cantidad mayor a 0.01 eruso
+   */
   router.post(
     "/deposit",
     withdrawDepositValidation,

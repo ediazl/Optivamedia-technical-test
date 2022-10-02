@@ -1,6 +1,11 @@
 import { Double, MongoClient, ObjectId } from "mongodb";
 import { DB_COLLECTIONS, DEFAULT_USER_ID } from "./constants";
 
+/**
+ * Inicializa la BD con un usuario por defecto
+ * @param url
+ * @returns
+ */
 export async function initMongo(url: string) {
   try {
     console.log(url);
