@@ -1,4 +1,4 @@
-## Comando
+# Comando
 
 Para iniciar el sistema. Debe ejecutar el siguiente comando:
 `sudo docker compose up -d --build`
@@ -9,9 +9,11 @@ Se debe ir al navegador a la ruta:
 
 `localhost:3000`
 
+# Notas desarrollo
+
 ## Consideraciones
 
-Debido a la naturaleza del problema, para hacer estas operaciones seguras, se podrían usar transacciones. Por lo que una base de datos relacional sería recomendable. Mongodb no fue concebido para ello inicialmente, pero actualmente tiene el modo replicaSet que si que permite hacer transacciones. (Que en mi día a día si utilizo). He elegido mongodb ya ue tiene un modelo de datos flexible y a futuro esto es una ventaja.
+Debido a la naturaleza del problema, para hacer estas operaciones seguras, se podrían usar transacciones. Por lo que una base de datos relacional sería recomendable. Mongodb no fue concebido para ello inicialmente, pero actualmente tiene el modo replicaSet que si que permite hacer transacciones. (Que en mi día a día si utilizo). He elegido mongodb ya ue tiene un modelo de datos flexible y muy escalable. A futuro esto es una ventaja.
 
 ## Decisioens de diseño
 
