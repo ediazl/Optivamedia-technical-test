@@ -29,7 +29,7 @@ Se ha realizado una validacion que verifica:
 
 1. Cantidad mínima de operación es 1 centimo
 2. Los datos son del tipo esperado.
-3. El dato puede tener muchos decimales. Coger los dos primeros. (podria lanzarse un error. Debería limitarse en frontend tambien)
+3. El dato puede tener muchos decimales. Coger los dos primeros. (En frontend tambien se ha limitado)
    Se ha evitado utilizar la funcion ParseFloat ya que con un dato de mas de dos decimales haría un redondeo. ej 0.056 -> 0.6
    He querido evitar esta situación.
 
