@@ -56,11 +56,11 @@
                 var cell1 = row.insertCell(0).innerHTML = new Date(element.date).toLocaleDateString('es-ES')
                 var cell2 = row.insertCell(1);
                 if(element.type === 'deposit') {
-                    cell2.innerHTML = `+${element.amount}`;
+                    cell2.innerHTML = `+${element.amount.toFixed(2)}`;
                 } else {
-                    cell2.innerHTML = `-${element.amount}`;
+                    cell2.innerHTML = `-${element.amount.toFixed(2)}`;
                 }
-                var cell3 = row.insertCell(2).innerHTML = element.balance;
+                var cell3 = row.insertCell(2).innerHTML = element.balance.toFixed(2);
             });
             document.getElementById("transactions").appendChild(table);
             // data.transactions.map(({amount, type, date, balance}) => {
@@ -96,13 +96,10 @@
                 userId: DEFAULT_USER_ID
             }),
         })
-        .then((res, err) => {
-            if(err){
-                window.alert('Operation failed')
-
-            } else {
+        .then((res) => {
                 window.alert('Operation successful')
-            }
+        }).catch((err) => {
+            window.alert('Operation failed')
         })
     })
 
@@ -124,12 +121,10 @@
                 userId: DEFAULT_USER_ID
             }),
         })
-        .then((res, err) => {
-            if(err){
-                window.alert('Operation failed')
-            } else {
+        .then((res) => {
                 window.alert('Operation successful')
-            }
+        }).catch((err) => {
+            window.alert('Operation failed')
         })
     })
 

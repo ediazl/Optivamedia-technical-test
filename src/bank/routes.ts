@@ -38,6 +38,8 @@ module.exports = (dbDriver: MongoClient) => {
         console.log(amount);
         // Two decimals
         const amountDouble = Number.parseFloat(Math.abs(amount).toFixed(2));
+        console.log("amountDouble");
+        console.log(amountDouble);
         await withDrawController(
           DEFAULT_USER_ID,
           new Double(amountDouble),
@@ -63,6 +65,8 @@ module.exports = (dbDriver: MongoClient) => {
         // Usuario de la transaccion,cuando haya login
         const { amount, userId } = req.body;
         const amountDouble = Number.parseFloat(Math.abs(amount).toFixed(2));
+        console.log("amountDouble");
+        console.log(amountDouble);
         await depositController(
           DEFAULT_USER_ID,
           new Double(amountDouble),
