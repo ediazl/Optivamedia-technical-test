@@ -15,11 +15,11 @@ Debido a la naturaleza del problema, para hacer estas operaciones seguras, se po
 
 ## Decisioens de diseño
 
-Con vista al futuro de la aplicacion, he pensado generalizar más el ejercicio, partiendo de la idea lógica de que el cajero lo puedan utilizar diferentes usuarios y no solo uno, por lo que el diseño se ha basado en esa premisa. Un usuario inicia sesión, y obtiene sus datos.
+Con vista al futuro de la aplicacion, he pensado generalizar más el ejercicio, teniendo en cuenta de que el cajero lo puedan utilizar diferentes usuarios y no solo uno, por lo que el diseño se ha basado en esa premisa. Un usuario inicia sesión, y obtiene sus datos.
 
 ### Endpoints
 
-con motivo de la decision tomada anteriormente, se ha añadido el parametro userId a las rutas, correspondiente al id de usuario que ha iniciado sesión.
+Con motivo de la decision tomada anteriormente, se ha añadido el parametro userId a las rutas, correspondiente al id de usuario que ha iniciado sesión.
 
 He decidido realizar dos endpoints diferentes para separar posibles lógicas adicionales (Enviar email cuando se haya hecho una retirada, pedir código de confirmación, etc.). Se podría unificar en uno, por ejemplo, si se añade el amount como un string con el siguiente formato "-500" para retirada y "+500" para depósito. Pero a futurio se perdería la ventaja anteriormente comentada.
 
