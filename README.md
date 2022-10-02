@@ -98,7 +98,3 @@ En produccion Si que configuraría la BD en modoReplica set para garantizar alta
 ### Frontend
 
 Se ha realizado un frontend simple para probar el sistema realizado.
-
-## Tiempo estimado
-
-5 horas
