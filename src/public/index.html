@@ -39,21 +39,41 @@
             const title = document.createElement("h1");
             title.innerHTML = `Transactions \n`
             document.getElementById("transactions").appendChild(title);
-            const header = document.createElement("h3");
-            header.innerHTML = `Date     Amount     Balance \n`
-            document.getElementById("transactions").appendChild(header);
+            // const header = document.createElement("h3");
+            // header.innerHTML = `Date     Amount     Balance \n`
+            // document.getElementById("transactions").appendChild(header);
+            var table = document.createElement("table");
+            var header = table.createTHead();
+            table.style = "border-color:black;border-style:solid;border-width:1px;";
+            var row = header.insertRow(0);
+            var cell1 = row.insertCell(0).innerHTML = `<b>Date</b>`;
+            var cell2 = row.insertCell(1).innerHTML = `<b>Amount</b>`;
+            var cell3 = row.insertCell(2).innerHTML = `<b>Balance</b>`;
 
-            data.transactions.map(({amount, type, date, balance}) => {
-                const div = document.createElement('div');
-                const p = document.createElement('p');
-                if(type === 'deposit') {
-                    p.innerHTML = `${new Date(date).toLocaleDateString('es-ES')}     +${amount}     ${balance} \n`;
+            // Mostrar cada fila
+            data.transactions.forEach(element => {
+                var row = table.insertRow(1);
+                var cell1 = row.insertCell(0).innerHTML = new Date(element.date).toLocaleDateString('es-ES')
+                var cell2 = row.insertCell(1);
+                if(element.type === 'deposit') {
+                    cell2.innerHTML = `+${element.amount}`;
                 } else {
-                    p.innerHTML = `${new Date(date).toLocaleDateString('es-ES')}     -${amount}     ${balance} \n`;
+                    cell2.innerHTML = `-${element.amount}`;
                 }
-                div.appendChild(p);
-                document.getElementById('transactions').appendChild(div);
-            })
+                var cell3 = row.insertCell(2).innerHTML = element.balance;
+            });
+            document.getElementById("transactions").appendChild(table);
+            // data.transactions.map(({amount, type, date, balance}) => {
+            //     const div = document.createElement('div');
+            //     const p = document.createElement('p');
+            //     if(type === 'deposit') {
+            //         p.innerHTML = `${new Date(date).toLocaleDateString('es-ES')}     +${amount}     ${balance} \n`;
+            //     } else {
+            //         p.innerHTML = `${new Date(date).toLocaleDateString('es-ES')}     -${amount}     ${balance} \n`;
+            //     }
+            //     div.appendChild(p);
+            //     document.getElementById('transactions').appendChild(div);
+            // })
             
         })
     })
@@ -61,8 +81,8 @@
     const buttonDeposit = document.getElementById('buttonDeposit');
     buttonDeposit.addEventListener('click', () => {
         console.log(
-        JSON.stringify({
-                amount: formDeposit.amount.value,
+            JSON.stringify({
+                amount: parseFloat(formDeposit.amount.value),
                 userId: DEFAULT_USER_ID
             }))
         fetch('/api/v1/bank/deposit', {
@@ -72,7 +92,7 @@
             'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                amount: parseInt(formDeposit.amount.value),
+                amount: parseFloat(formDeposit.amount.value),
                 userId: DEFAULT_USER_ID
             }),
         })
@@ -89,8 +109,8 @@
     const buttonWithdraw = document.getElementById('buttonWithdraw');
     buttonWithdraw.addEventListener('click', () => {
         console.log(
-        JSON.stringify({
-                amount: formWithdraw.amount.value,
+            JSON.stringify({
+                amount: parseFloat(formWithdraw.amount.value),
                 userId: DEFAULT_USER_ID
             }))
         fetch('/api/v1/bank/withdraw', {
@@ -100,7 +120,7 @@
             'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                amount: parseInt(formWithdraw.amount.value),
+                amount: parseFloat(formWithdraw.amount.value),
                 userId: DEFAULT_USER_ID
             }),
         })

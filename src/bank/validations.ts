@@ -1,6 +1,6 @@
 import { ObjectID } from "bson";
 import { NextFunction, Request, Response } from "express";
-export function withdrawValidation(
+export function withdrawDepositValidation(
   req: Request<null, null, { amount: number; userId: string }>,
   res: Response,
   next: NextFunction
@@ -14,28 +14,6 @@ export function withdrawValidation(
     }
     if (typeof amount !== "number" || amount <= 0) {
       return res.status(400).json({ error: "Invalid amount" + amount });
-    }
-    next();
-  } catch (error) {
-    res.status(400).json({ error: "BadParams" });
-  }
-}
-
-export function depositValidation(
-  req: Request<null, null, { amount: number; userId: string }>,
-  res: Response,
-  next: NextFunction
-) {
-  console.log(JSON.stringify(req.body));
-  const { amount, userId } = req.body;
-  console.log(typeof amount);
-  console.log(amount);
-  try {
-    if (typeof userId !== "string" || !ObjectID.isValid(userId)) {
-      return res.status(400).json({ error: "Invalid userId" });
-    }
-    if (typeof amount !== "number" || amount <= 0) {
-      return res.status(400).json({ error: "Invalid amount " + amount });
     }
     next();
   } catch (error) {

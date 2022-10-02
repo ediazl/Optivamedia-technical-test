@@ -1,4 +1,4 @@
-import { MongoClient, ObjectId } from "mongodb";
+import { Double, MongoClient, ObjectId } from "mongodb";
 import { DB_COLLECTIONS, DEFAULT_USER_ID } from "./constants";
 
 export async function initMongo(url: string) {
@@ -6,8 +6,9 @@ export async function initMongo(url: string) {
     console.log(url);
     let db = await new MongoClient(url).connect();
     console.log("Connected to MongoDB");
-    // Set default data for testing with default user
-    db.db()
+    // Delete old data when starting app
+    await db
+      .db()
       .collection(DB_COLLECTIONS.accounts)
       .updateOne(
         {
@@ -16,7 +17,7 @@ export async function initMongo(url: string) {
         {
           // Default data for testint
           $set: {
-            balance: 1000,
+            balance: new Double(1000),
             createdAt: new Date(),
           },
         },
@@ -24,6 +25,8 @@ export async function initMongo(url: string) {
           upsert: true,
         }
       );
+
+    await db.db().collection(DB_COLLECTIONS.transactions).deleteMany({});
     return db;
   } catch (error) {
     console.error(error);

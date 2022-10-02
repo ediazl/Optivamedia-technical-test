@@ -1,16 +1,12 @@
 import { Request, Response, Router } from "express";
-import { MongoClient } from "mongodb";
+import { Double, MongoClient } from "mongodb";
 import { DEFAULT_USER_ID } from "../constants";
 import {
   depositController,
   getTransactions,
   withDrawController,
 } from "./controller";
-import {
-  depositValidation,
-  movementsValidation,
-  withdrawValidation,
-} from "./validations";
+import { movementsValidation, withdrawDepositValidation } from "./validations";
 
 const router: Router = require("express").Router();
 
@@ -30,15 +26,23 @@ module.exports = (dbDriver: MongoClient) => {
   );
   router.post(
     "/withdraw",
-    withdrawValidation,
+    withdrawDepositValidation,
     async (
       req: Request<null, null, { amount: number; userId: string }>,
       res: Response
     ) => {
       try {
-        const { amount, userId } = req.body;
+        // Usuario de la transaccion,cuando haya login
+        let { amount, userId } = req.body;
 
-        await withDrawController(DEFAULT_USER_ID, Math.abs(amount), dbDriver);
+        console.log(amount);
+        // Two decimals
+        const amountDouble = Number.parseFloat(Math.abs(amount).toFixed(2));
+        await withDrawController(
+          DEFAULT_USER_ID,
+          new Double(amountDouble),
+          dbDriver
+        );
 
         res.sendStatus(204);
       } catch (error) {
@@ -49,17 +53,21 @@ module.exports = (dbDriver: MongoClient) => {
   );
   router.post(
     "/deposit",
-    depositValidation,
+    withdrawDepositValidation,
     async (
       req: Request<null, null, { amount: number; userId: string }>,
       res: Response
     ) => {
       console.log("Deposit!");
       try {
-        // Se podría recibir el userId en el body, cuando el usuario se haya logueado
+        // Usuario de la transaccion,cuando haya login
         const { amount, userId } = req.body;
-
-        await depositController(DEFAULT_USER_ID, amount, dbDriver);
+        const amountDouble = Number.parseFloat(Math.abs(amount).toFixed(2));
+        await depositController(
+          DEFAULT_USER_ID,
+          new Double(amountDouble),
+          dbDriver
+        );
 
         res.sendStatus(204);
       } catch (error) {

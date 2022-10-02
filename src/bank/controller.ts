@@ -1,4 +1,10 @@
-import { ModifyResult, MongoClient, ObjectId, UpdateResult } from "mongodb";
+import {
+  Double,
+  ModifyResult,
+  MongoClient,
+  ObjectId,
+  UpdateResult,
+} from "mongodb";
 import { DB_COLLECTIONS, DEFAULT_USER_ID } from "../constants";
 import { IAccount } from "../models/accounts";
 import { ITransaction } from "../models/transactions";
@@ -11,7 +17,7 @@ import { ITransaction } from "../models/transactions";
  */
 export async function withDrawController(
   userId: string,
-  amount: number,
+  amount: Double,
   dbDriver: MongoClient
 ) {
   console.log("withdraw" + amount + " from " + userId);
@@ -67,7 +73,7 @@ export async function withDrawController(
       userId: new ObjectId(userId),
       date: new Date(),
       type: "withdraw",
-      amount,
+      amount: amount,
       balance: (res.value as IAccount).balance,
     };
     await dbDriver.db().collection(DB_COLLECTIONS.transactions).insertOne(data);
@@ -98,7 +104,7 @@ export async function withDrawController(
  */
 export async function depositController(
   userId: string,
-  amount: number,
+  amount: Double,
   dbDriver: MongoClient
 ) {
   console.log("deposit");

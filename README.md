@@ -11,7 +11,7 @@ Se debe ir al navegador a la ruta:
 
 ## Consideraciones
 
-Debido a la naturaleza del problema, para hacer estas operaciones seguras, se deben usar transacciones. Por lo que una base de datos MySQL sería recomendable. Mongodb no fue concebido para ello inicialmente, pero actualmente existe un modo replicaSet que si que permite hacer transacciones.
+Debido a la naturaleza del problema, para hacer estas operaciones seguras, se podrían usar transacciones. Por lo que una base de datos MySQL sería recomendable. Mongodb no fue concebido para ello inicialmente, pero actualmente el modo replicaSet que si que permite hacer transacciones. (Que en mi trabajo si que utilizo).
 
 ## Decisioens de diseño
 
@@ -26,7 +26,7 @@ Se podría unificar en uno, si se añade el amount como un string con el siguien
 Utilizar el driver nativo de mongo -> evitar capa de abstraccion (mongoose)
 
 Se ha decidido crear una instancia de cliente de clase DbDriver y con ella,
-pasarsela como parametro a cada ruta. Obliga a organizar mejor el código y poder seguir el flujo desde un punto. Es decir, no lo exportas y ala, que lo use quien quiera.
+pasarsela como parametro a cada ruta. Obliga a organizar mejor el código y poder seguir el flujo desde un punto y que haya trazabilidad. Es decir, no lo exportas y ala, que lo use quien quiera.
 
 Otra opción sería crear una clase con parametro cliente, y hacerlo global.
 
@@ -41,11 +41,14 @@ Se ha decidio crear dos colecciones diferentes. Transactions y Accounts
             _id: id transaccion
             userId: id de usuario
             date: fecha de la transaccion
-            type: tipo de la transaccion (deposit o withdrawal) (Para poder filtrar por ello)
+            type: tipo de la transaccion (deposit o withdrawal) (Ayuda a hacer querys filtrando por ello)
+            amount: Cantidad de la transaccion
+            balance: balance resultante de la transaccion
         }
 
         Alternativas:
             1.Se podría considerar hacer dos colecciones separadas, una para retiradas y otra para depósitos para que ante un aumento de los registros, disminuir el tiempo de consulta.
+            2.Existe el tipo Decimal128 para mayor precision de los decimales, perfecto para datos monetarios, pero por simplicidad, se ha utilizado el tipo Double, que utiliza 8bytes.
 
     - Fondos:
         Almacenará la cantidad total que tiene el usuario y a futuro se puede añadir otro tipo de información, como tipo de cuenta, permisos asociados, etc.
