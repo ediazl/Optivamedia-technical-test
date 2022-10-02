@@ -9,6 +9,8 @@ Se debe ir al navegador a la ruta:
 
 `localhost:3000`
 
+Se puede consultar el contenido de la BD del contenedor de mongodb en el puerto 27018
+
 # Notas desarrollo
 
 ## Consideraciones
