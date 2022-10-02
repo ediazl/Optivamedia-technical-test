@@ -12,7 +12,7 @@ export function withdrawDepositValidation(
     if (typeof userId !== "string" || !ObjectID.isValid(userId)) {
       return res.status(400).json({ error: "Invalid userId" });
     }
-    if (typeof amount !== "number" || amount <= 0) {
+    if (typeof amount !== "number" || amount <= 0.01) {
       return res.status(400).json({ error: "Invalid amount" + amount });
     }
     next();
