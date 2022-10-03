@@ -78,7 +78,7 @@ export async function withDrawController(
     };
     await dbDriver.db().collection(DB_COLLECTIONS.transactions).insertOne(data);
   } catch (error) {
-    // TODO: Delete update
+    // To maintain consistency, we need to undo the update
     await dbDriver
       .db()
       .collection(DB_COLLECTIONS.accounts)
@@ -158,6 +158,16 @@ export async function depositController(
     await dbDriver.db().collection(DB_COLLECTIONS.transactions).insertOne(data);
   } catch (error) {
     console.error(error);
+    // To maintain consistency, we need to undo the update
+    await dbDriver
+      .db()
+      .collection(DB_COLLECTIONS.accounts)
+      .updateOne(
+        { _id: new ObjectId(userId) },
+        {
+          $inc: { balance: -amount },
+        }
+      );
     throw {
       _id: "databaseError",
       resCode: 500,
