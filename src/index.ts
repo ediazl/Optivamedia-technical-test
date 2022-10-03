@@ -1,6 +1,5 @@
 import bodyParser from "body-parser";
 import express from "express";
-import { MongoClient } from "mongodb";
 import { ExitStatus, skipPartiallyEmittedExpressions } from "typescript";
 import { DATABASE_NAME, MONGO_URI, PORT } from "./constants";
 import { initMongo } from "./dbDriver";
